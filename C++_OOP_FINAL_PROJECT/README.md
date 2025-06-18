@@ -8,31 +8,34 @@ This project meets all requirements stated in the assignment by showcasing the u
 Objectives and Implementation
 
 1. Struct Definition for Contact Data
+
 At the core of the program is a simple Contact structure. It stores a person's name and phone number using character arrays. This struct is used inside the derived contact classes to represent the basic identity of any contact.
 
 2. Abstract Base Class: ContactBase
+   
 An abstract class named ContactBase is used to define a common interface for all contact types. It includes pure virtual functions for displaying contact information and retrieving a contact's name. These virtual functions enforce that any derived class must implement its own version of these behaviors. A virtual destructor is also included to support proper cleanup of dynamically allocated contact objects through base-class pointers.
 
 3. FriendContact and WorkContact: Demonstrating Inheritance and Polymorphism
+   
 The program defines two specialized classes that inherit from the abstract base class: FriendContact and WorkContact. These classes each store the contact’s details and override the display and name-access functions to handle their specific formatting and behavior. This demonstrates inheritance and polymorphism, where a base class pointer can point to an object of a derived class, and the correct method is called at runtime depending on the object type.
 
 For instance, calling the display() function on a ContactBase pointer will dynamically call either the friend’s or the work contact’s version of that function based on the actual object type.
 
 4. Managing a Dynamic Contact List
+   
 Contacts are stored in a dynamically resizable array of base-class pointers. This means every time a contact is added, a new array is created with one additional slot, the previous elements are copied, and memory is reallocated. The old array is deleted to avoid memory leaks. This approach provides flexibility to grow the contact list based on user input during runtime.
 
 5. Group Structure for Contact Organization
+   
 Each group in the program is represented by a structure that stores:
-
 A name for the group
-
 A dynamic array of contact pointers (i.e., group members)
-
 The number of contacts in the group
 
 This design supports the creation of user-defined groups, such as "Family", "Colleagues", or "Team A", and allows assigning multiple contacts to a single group. A user can add contacts to a group, display all members of a group, or remove specific members.
 
 6. Dynamic Group Creation and Management
+   
 The program uses a manager structure to handle an array of groups. Like the contact list, this group array is also dynamically resizable. Users can create as many groups as they want, and each group can independently maintain its own contact members. The program also supports removing entire groups by name. When a group is removed, its memory is cleaned up to prevent resource leaks.
 
 7. User Interaction
