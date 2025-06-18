@@ -44,18 +44,20 @@ public:
 
 
 struct Group { // a structure representing a group with a name and dynamic list of contact members.
+
  char name[20]; // this allows creation of a name of group with characters or space limited to 20.
+ 
  ContactBase** members; // A dynamic array of pointers to ContactBase objects (can hold Friends or Work contacts), it's a pointer to a pointer. 
- int memberCount; // How many contacts are currently in this group
+ 
+ int memberCount; // this shows how many contacts are currently in this group
  Group(const char* groupName) { // Constructor for Group
- strcpy(name, groupName);
+ strcpy(name, groupName); // this copy text from groupName into name
  members = nullptr; // Initialize members to null (no members yet)
  memberCount = 0; // No members yet 
  }
- void addMember(ContactBase* contact) {
- // Dynamically resize the members array to add a new contact
- ContactBase** temp = new ContactBase*[memberCount + 1]; // Create a
-new array, one size larger
+ 
+ void addMember(ContactBase* contact) { // this is a function that adds a contact or a new member to the group.
+ ContactBase** temp = new ContactBase*[memberCount + 1]; // Create a new array, one size larger
  for (int i = 0; i < memberCount; i++)
  temp[i] = members[i]; // Copy existing members to the new array
  temp[memberCount] = contact; // Add the new contact at the end
@@ -63,100 +65,68 @@ new array, one size larger
  members = temp; // Point 'members' to the new (larger) array
  memberCount++; // Increment the count of members
  }
- void removeMember(const char* contactName) {
+ 
+ void removeMember(const char* contactName) { // this function removes a contact by name.
  int index = -1; // To store the index of the contact to remove
  for (int i = 0; i < memberCount; i++) {
- if (strcmp(members[i]->getName(), contactName) == 0) { // Compare
-names
+ if (strcmp(members[i]->getName(), contactName) == 0) { // this code line will compare the stored name with given name and see if they matches or not.
  index = i; // Found the contact, store its index
  break;
  }
  }
  if (index == -1) return; // If contact not found, do nothing
  // Dynamically resize the members array to remove a contact
- ContactBase** temp = new ContactBase*[memberCount - 1]; // Create a
-new array, one size smaller
- for (int i = 0, j = 0; i < memberCount; i++) { // Loop through old
-members
- if (i != index) // If it's not the one we're removing
+ 
+ ContactBase** temp = new ContactBase*[memberCount - 1]; // Create a new array, one size smaller
+ for (int i = 0, j = 0; i < memberCount; i++) { // Loop through old members
+ if (i != index) // If it's not the one to be removed.
  temp[j++] = members[i]; // Copy it to the new array
  }
  delete[] members; // Delete the old array
  members = temp; // Point 'members' to the new array
  memberCount--; // Decrement the count
  }
- void displayGroup() {
+ void displayGroup() { //this is a function created to display Group member's information
  cout << "\nGroup: " << name << "\n"; // Print group name
  for (int i = 0; i < memberCount; i++)
- members[i]->display(); // Call display() for each member
-(polymorphically)
+ members[i]->display(); // Call display() for each member (polymorphically)
  }
- ~Group() { // Destructor for Group: called when a Group object is
-destroyed
+ ~Group() { // Destructor for Group: called when a Group object is destroyed
  delete[] members; // Frees the memory allocated for the members array
  }
 };
- struct Group: This defines a blueprint for a group. Each group has a name, a list of
-members, and a memberCount.
- ContactBase** members;: This is the core of how groups hold contacts. It's a pointer
-to a pointer. This means it points to the beginning of an array, and each element in that
-array is itself a pointer to a ContactBase object. This allows a group to hold any type of
-ContactBase (Friend or Work) in the same list.
- Group(const char* groupName): The constructor for Group. It initializes the group's
-name and sets members to nullptr (meaning it's empty) and memberCount to 0.
- void addMember(ContactBase* contact): This function adds a contact to the group. It
-dynamically allocates a new, larger array, copies all the existing members into it, adds
-the new member, then deletes the old array and updates the members pointer to the new
-array. This is a common pattern for managing dynamic arrays (like std::vector does
-for you automatically).
- void removeMember(const char* contactName): This function removes a contact by
-name. It finds the contact, then creates a new, smaller array, copies all members except
-the one to be removed, deletes the old array, and updates members.
- void displayGroup(): Prints the group's name and then calls display() on each
-contact in the group. Because members holds ContactBase* pointers, this again
-demonstrates polymorphism: the correct display() (Friend's or Work's) is called for
-each contact.
- ~Group(): This is the destructor for Group. When a Group object is destroyed, this
-function runs. It's crucial for freeing the dynamically allocated memory for the
-members array (delete[] members;) to prevent memory leaks. Note that it only deletes
-the array of pointers, not the actual ContactBase objects themselves, as those are
-managed by main's contacts array.
-Step 5: Managing All Your Groups
-C++
-// ========== STEP 5: Group Manager ==========
-struct GroupManager {
+
+ //Managing All Your Groups:
+
+struct GroupManager { // A structure to manage multiple groups
  Group** groups; // A dynamic array of pointers to Group objects
  int groupCount; // How many groups are currently managed
  GroupManager() { // Constructor for GroupManager
  groups = nullptr; // Initialize to no groups
  groupCount = 0;
  }
- void addGroup(const char* groupName) {
- // Dynamically resize the groups array
- Group** temp = new Group*[groupCount + 1]; // Create a new array, one
-size larger
+ 
+ void addGroup(const char* groupName) {  // this function will dynamically resize the groups array to include new group
+ Group** temp = new Group*[groupCount + 1]; // Create a new array, one size larger
  for (int i = 0; i < groupCount; i++)
  temp[i] = groups[i]; // Copy existing group pointers
- temp[groupCount] = new Group(groupName); // Create a NEW Group object
-and add its pointer
+ temp[groupCount] = new Group(groupName); // Create a NEW Group object and add its pointer
  delete[] groups; // Delete the old array
  groups = temp; // Point to the new array
  groupCount++; // Increment count
  }
- void removeGroup(const char* groupName) {
- int index = -1;
+ void removeGroup(const char* groupName) { // this function removes a group by it's name
+ int index = -1; // to store the index of group to be removed
  for (int i = 0; i < groupCount; i++) {
- if (strcmp(groups[i]->name, groupName) == 0) { // Find group by
-name
+ if (strcmp(groups[i]->name, groupName) == 0) { // Find group by name
  index = i;
  break;
  }
  }
+ 
  if (index == -1) return;
- delete groups[index]; // IMPORTANT: Delete the actual Group object
-first
- Group** temp = new Group*[groupCount - 1]; // Create a new array, one
-size smaller
+ delete groups[index]; // IMPORTANT: Delete the actual Group object first
+ Group** temp = new Group*[groupCount - 1]; // Create a new array, one size smaller
  for (int i = 0, j = 0; i < groupCount; i++) {
  if (i != index)
  temp[j++] = groups[i]; // Copy other group pointers
@@ -178,8 +148,7 @@ size smaller
  }
  ~GroupManager() { // Destructor for GroupManager
  for (int i = 0; i < groupCount; i++)
- delete groups[i]; // IMPORTANT: Delete each Group object held by
-the manager
+ delete groups[i]; // IMPORTANT: Delete each Group object held by the manager
  delete[] groups; // Delete the array of group pointers
  }
 };
