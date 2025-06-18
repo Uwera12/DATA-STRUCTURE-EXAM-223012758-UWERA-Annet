@@ -1,5 +1,7 @@
 PROJECT: CONTACT & GROUP ORGANIZER README.
-The Contact & Group Organizer project is a C++ application designed to manage personal and professional contacts and organize them into dynamically created groups. The program allows users to create, store, display, and manage two types of contacts—Friends and Work colleagues—and assign them into custom groups. It implements object-oriented programming principles including inheritance, abstraction, polymorphism, and dynamic memory allocation using raw pointers.
+
+
+The Contact & Group Organizer project is a C++ application designed to manage personal and professional contacts and organize them into dynamically created groups. The program allows users to create, store, display, and manage two types of contacts Friends and Work colleagues and assign them into custom groups. It implements object-oriented programming principles including inheritance, abstraction, polymorphism, and dynamic memory allocation using raw pointers.
 
 This project meets all requirements stated in the assignment by showcasing the use of abstract classes, dynamic arrays of objects, and pointer arithmetic to manipulate memory structures manually.
 
