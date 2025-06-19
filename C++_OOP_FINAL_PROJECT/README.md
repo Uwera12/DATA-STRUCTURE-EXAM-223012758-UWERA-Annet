@@ -209,6 +209,147 @@ Remove a group or remove a specific member from a group.
 
 At the end of the program, all dynamically allocated memory is properly deleted to ensure the application runs efficiently and safely.
 
+int main() {
+    ContactBase** contacts = nullptr;
+    int contactCount = 0;
+    GroupManager gm;
+
+    char name[30], phone[15], groupName[20];
+    int type;
+    char choice;
+
+    // Add contacts
+    do {
+        cout << "\n--- Add Contact  ---\n";
+        cout << "Enter name: ";
+        cin.getline(name, 30);
+        cout << "Enter phone: ";
+        cin.getline(phone, 15);
+        cout << "Type (1-Friend, 2-Work): ";
+        cin >> type;
+        cin.ignore();
+
+        ContactBase** temp = new ContactBase*[contactCount + 1];
+        for (int i = 0; i < contactCount; i++)
+            temp[i] = contacts[i];
+
+        if (type == 1)
+            temp[contactCount] = new FriendContact(name, phone);
+        else
+            temp[contactCount] = new WorkContact(name, phone);
+
+        delete[] contacts;
+        contacts = temp;
+        contactCount++;
+
+        cout << "Add another contact? (y/n): ";
+        cin >> choice;
+        cin.ignore();
+    } while (choice == 'y' || choice == 'Y');
+
+    // Show all contacts
+    cout << "\nAll Contacts:\n";
+    for (int i = 0; i < contactCount; i++)
+        contacts[i]->display();
+
+    // Create groups
+    cout << "\n--- Create Groups ---\n";
+    do {
+        cout << "Enter group name: ";
+        cin.getline(groupName, 20);
+        gm.addGroup(groupName);
+
+        cout << "Add another group? (y/n): ";
+        cin >> choice;
+        cin.ignore();
+    } while (choice == 'y' || choice == 'Y');
+
+    // Assign contacts to groups
+    cout << "\n--- Assign Contacts to Groups ---\n";
+    do {
+        cout << "Enter group name: ";
+        cin.getline(groupName, 20);
+        Group* g = gm.findGroup(groupName);
+        if (!g) {
+            cout << "Group not found!\n";
+            continue;
+        }
+
+        cout << "Enter contact name to add: ";
+        cin.getline(name, 30);
+        bool found = false;
+        for (int i = 0; i < contactCount; i++) {
+            if (strcmp(contacts[i]->getName(), name) == 0) {
+                g->addMember(contacts[i]);
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            cout << "Contact not found.\n";
+
+        cout << "Add another member? (y/n): ";
+        cin >> choice;
+        cin.ignore();
+    } while (choice == 'y' || choice == 'Y');
+
+    // Remove group or member menu
+    do {
+        cout << "\n--- Remove Options ---\n";
+        cout << "1. Remove Group\n";
+        cout << "2. Remove Member from Group\n";
+        cout << "3. Display All Groups\n";
+        cout << "4. Exit Remove Menu\n";
+        cout << "Enter your choice: ";
+        int removeOption;
+        cin >> removeOption;
+        cin.ignore();
+
+        if (removeOption == 1) {
+            cout << "Enter group name to remove: ";
+            cin.getline(groupName, 20);
+            gm.removeGroup(groupName);
+            cout << "Group removed!\n";
+            
+        } else if (removeOption == 2) {
+            cout << "Enter group name: ";
+            cin.getline(groupName, 20);
+            Group* g = gm.findGroup(groupName);
+            if (!g) {
+                cout << "Group not found.\n";
+                continue;
+            }
+            cout << "Enter contact name to remove from group: ";
+            cin.getline(name, 30);
+            g->removeMember(name);
+            cout << "Member removed if found.\n";
+        } else if (removeOption == 3) {
+            gm.displayAllGroups();
+        } else if (removeOption == 4) {
+            break;
+        } else {
+            cout << "Invalid option.\n";
+        }
+
+        cout << "Do want to proceed with remove/display operation? (y/n): ";
+        cin >> choice;
+        cin.ignore();
+    } while (choice == 'y' || choice == 'Y');
+
+    // Final group display
+    cout << "\n--- Final Group Details ---\n";
+    gm.displayAllGroups();
+
+    // Cleanup
+    for (int i = 0; i < contactCount; i++)
+        delete contacts[i];
+    delete[] contacts;
+
+    return 0;
+}
+
+
+
 Key Object-Oriented Concepts Demonstrated
 Abstraction: Through the use of a base abstract class for contacts.
 
